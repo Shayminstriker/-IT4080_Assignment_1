@@ -46,11 +46,13 @@ public class NetworkHandler : NetworkBehaviour
     }
 
     private void ClientOnClientConnected(ulong clientID) {
-        Debug.Log($" I {clientID} have connected to the server");
+        if (IsHost) Debug.Log($"Client {clientID} connected to the server");
+        else Debug.Log($" I {clientID} have connected to the server");
         
     }
     private void ClientOnClientDisconnected(ulong clientID) {
-        Debug.Log($" I {clientID} have disconnected from the server");
+        if (IsHost) Debug.Log($"Client {clientID} disconnected to the server");
+        else Debug.Log($" I {clientID} have disconnected to the server");
     }
     private void ClientOnClientStopped(bool indicator) {
         hasPrinted = false;
