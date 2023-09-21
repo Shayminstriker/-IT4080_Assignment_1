@@ -9,7 +9,7 @@ public class Player : NetworkBehaviour
     //I'm not sure why the color isn't working. Please let me know why it doesn't work. Thank you
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
-    public NetworkVariable<Color> playerColorNetVar = new NetworkVariable<Color>(Color.red);
+    public NetworkVariable<Color> playerColorNetVar;
 
     private Camera playerCamera;
     private GameObject playerBody;
@@ -44,7 +44,7 @@ public class Player : NetworkBehaviour
         playerBody.GetComponent<MeshRenderer>().material.color = playerColorNetVar.Value;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = true)]
     private void MoveServerRpc(Vector3 movement, Vector3 rotation, ulong clientId)
     {
         transform.Translate(movement);
