@@ -9,6 +9,7 @@ public class ChatServer : NetworkBehaviour
     public ChatUi chatUi;
     const ulong SYSTEM_ID = ulong.MaxValue;
     private ulong[] dmClientIds = new ulong[2];
+    private ulong[] sClientIds = new ulong[1];
 
     void Start()
     {
@@ -17,6 +18,7 @@ public class ChatServer : NetworkBehaviour
 
         if (IsServer) {
             NetworkManager.OnClientConnectedCallback += ServerOnClientConnected;
+            NetworkManager.OnClientDisconnectCallback += ServerOnClientDisconnected;
             if (IsHost)
             {
                 DisplayMessageLocally(SYSTEM_ID, $"You are the host AND client {NetworkManager.LocalClientId}");
@@ -48,8 +50,20 @@ public class ChatServer : NetworkBehaviour
 
     }
 
+    private void ServerOnClientDisconnected(ulong clientId)
+    {
+        
 
-        private void DisplayMessageLocally(ulong from, string message)
+        ToEveryone(
+           $"I ({clientId}) has disconnected",
+           NetworkManager.LocalClientId,
+           clientId);
+
+
+
+    }
+
+    private void DisplayMessageLocally(ulong from, string message)
         {
             string fromStr = $"Player {from}";
             Color textColor = chatUi.defaultTextColor;
@@ -103,23 +117,42 @@ public class ChatServer : NetworkBehaviour
             DisplayMessageLocally(from, message);
         }
 
+    private void ServerSingleMessage(string message, ulong to)
+    {
+        sClientIds[0] = to;
+        ClientRpcParams rpcParams = default;
+        rpcParams.Send.TargetClientIds = sClientIds;
+        ReceiveChatMessageClientRpc(message, SYSTEM_ID, rpcParams);
 
+    }
 
     private void ServerSendDirectMessage(string message, ulong from, ulong to)
     {
+        bool connected = false;
+        foreach (ulong clientId in NetworkManager.ConnectedClientsIds) {
+            if (clientId == to) connected = true;
+        }
 
-        dmClientIds[0] = from;
-        dmClientIds[1] = to;
+        if (connected)
+        {
+            dmClientIds[0] = from;
+            dmClientIds[1] = to;
 
-        ClientRpcParams rpcParams = default;
-        rpcParams.Send.TargetClientIds = dmClientIds;
+            ClientRpcParams rpcParams = default;
+            rpcParams.Send.TargetClientIds = dmClientIds;
 
-        //clientIds[0] = from;
-       // ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
+            //clientIds[0] = from;
+            // ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
 
-       // clientIds[0] = to;
-        ReceiveChatMessageClientRpc(message, from, rpcParams);
+            // clientIds[0] = to;
+            ReceiveChatMessageClientRpc(message, from, rpcParams);
+        }
+        else
+        {
+            ServerSingleMessage($"There is no connected user ({to})", from);
+        }
     }
+
 
     private void ToEveryone(string message, ulong from, ulong to)
     {
@@ -132,6 +165,9 @@ public class ChatServer : NetworkBehaviour
         
         ReceiveChatMessageClientRpc(message, from, rpcParams);
     }
+
+   
+   
 
 }
 
