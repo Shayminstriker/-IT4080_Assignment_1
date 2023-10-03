@@ -111,12 +111,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2399936047881771140}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.48195, y: -1.8090972, z: 1.8}
-  m_LocalScale: {x: 0.3, y: 0.4, z: 1}
+  m_LocalPosition: {x: 0.14999998, y: 0.3425, z: 0.18340278}
+  m_LocalScale: {x: 0.15, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3776111292632090068}
-  m_RootOrder: 1
+  m_Children:
+  - {fileID: 1648989904408623859}
+  m_Father: {fileID: 5421634652873040742}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1671223861967841957
 MeshFilter:
@@ -211,8 +212,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5421634652873040742}
-  - {fileID: 7034620791591585300}
-  - {fileID: 1648989904408623859}
   m_Father: {fileID: 7334323924809520844}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -288,7 +287,8 @@ Transform:
   m_LocalPosition: {x: -2.78195, y: -3.1790972, z: 1.6165972}
   m_LocalScale: {x: 2, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7034620791591585300}
   m_Father: {fileID: 3776111292632090068}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -382,12 +382,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7446468203381962570}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.97195, y: -1.8090972, z: 1.86}
-  m_LocalScale: {x: 0.3, y: 0.4, z: 1}
+  m_LocalPosition: {x: -1.6333332, y: 0, z: 0.060000062}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3776111292632090068}
-  m_RootOrder: 2
+  m_Father: {fileID: 7034620791591585300}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &876240362696972767
 MeshFilter:
@@ -504,6 +504,7 @@ MonoBehaviour:
   rotationSpeed: 130
   playerColorNetVar:
     m_InternalValue: {r: 1, g: 0, b: 0, a: 1}
+  playerBody: {fileID: 8306658206905557052}
 --- !u!114 &8943149220063502137
 MonoBehaviour:
   m_ObjectHideFlags: 0

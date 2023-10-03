@@ -12,14 +12,14 @@ public class Player : NetworkBehaviour
     public NetworkVariable<Color> playerColorNetVar;
 
     private Camera playerCamera;
-    private GameObject playerBody;
+    public GameObject playerBody;
 
     private void Start() {
         playerCamera = transform.Find("Camera").GetComponent<Camera>();
         playerCamera.enabled = IsOwner;
         playerCamera.GetComponent<AudioListener>().enabled = IsOwner;
 
-        playerBody = transform.Find("PlayerBody").gameObject;
+        //playerBody = transform.Find("PlayerBody").gameObject;
         ApplyColor();
     }
 
