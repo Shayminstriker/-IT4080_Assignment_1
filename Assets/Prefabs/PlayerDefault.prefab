@@ -504,7 +504,7 @@ MonoBehaviour:
   rotationSpeed: 130
   playerColorNetVar:
     m_InternalValue: {r: 1, g: 0, b: 0, a: 1}
-  playerBody: {fileID: 8306658206905557052}
+  playerBody: {fileID: 5895940599062334051}
 --- !u!114 &8943149220063502137
 MonoBehaviour:
   m_ObjectHideFlags: 0
