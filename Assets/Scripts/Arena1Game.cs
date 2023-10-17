@@ -71,14 +71,14 @@ public class Arena1Game : NetworkBehaviour
 
         foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
         {
-            if (clientId == NetworkManager.LocalClientId)
-            {
+           // if (clientId == NetworkManager.LocalClientId)
+            //{
 
-                Player playerSpawn = Instantiate(hostPrefab, NextPosition(), Quaternion.identity);
-                playerSpawn.playerColorNetVar.Value = NextColor();
-                playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            }
-            else
+           //     Player playerSpawn = Instantiate(hostPrefab, NextPosition(), Quaternion.identity);
+           //     playerSpawn.playerColorNetVar.Value = NextColor();
+           //     playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+          //  }
+          //  else
             {
                 Player playerSpawn = Instantiate(playerPrefab, NextPosition(), Quaternion.identity);
                 playerSpawn.playerColorNetVar.Value = NextColor();

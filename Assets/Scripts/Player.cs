@@ -6,7 +6,7 @@ using Unity.Netcode;
 public class Player : NetworkBehaviour
 {
 
-    //I'm not sure why the color isn't working. Please let me know why it doesn't work. Thank you
+    public BulletSpawner bulletSpawner;
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
     public NetworkVariable<Color> playerColorNetVar;
@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour
     public GameObject playerBody;
 
     private void Start() {
+        NetworkHelper.Log(this, "Start");
         playerCamera = transform.Find("Camera").GetComponent<Camera>();
         playerCamera.enabled = IsOwner;
         playerCamera.GetComponent<AudioListener>().enabled = IsOwner;
@@ -27,8 +28,21 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             OwnerHandleInput();
+            if (Input.GetButtonDown("Fire1")){
+                NetworkHelper.Log("Requesting Fire");
+                FireServerRpc();
+            }
         }
     }
+
+
+    public override void OnNetworkSpawn()
+    {
+        NetworkHelper.Log(this, "OnNetworkSpawn");
+        Start();
+        base.OnNetworkSpawn();
+    }
+
 
     private void OwnerHandleInput()
     {
@@ -70,6 +84,16 @@ public class Player : NetworkBehaviour
             }
         }
     }
+
+
+    [ServerRpc]
+    private void FireServerRpc()
+    {
+        NetworkHelper.Log("Fire");
+        bulletSpawner.Fire();
+    }
+
+
 
     // Rotate around the y axis when shift is not pressed
     private Vector3 CalcRotation()

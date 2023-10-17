@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class ChatServer : NetworkBehaviour
+public class ChatServer1 : NetworkBehaviour
 {
 
     public ChatUi chatUi;

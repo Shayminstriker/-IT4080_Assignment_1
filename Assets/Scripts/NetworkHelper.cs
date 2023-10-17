@@ -7,6 +7,8 @@ using UnityEngine;
 public class NetworkHelper : MonoBehaviour
 {
 
+    private static NetworkManager netMgr = NetworkManager.Singleton;
+
     private static void StartButtons()    {
         if (GUILayout.Button("Host")) NetworkManager.Singleton.StartHost();
         if (GUILayout.Button("Client")) NetworkManager.Singleton.StartClient();
@@ -44,5 +46,33 @@ public class NetworkHelper : MonoBehaviour
         GUILayout.EndArea();
     }
 
+    public static string GetNetworkMode()
+    {
+        string type = "client";
+        if (netMgr.IsServer)
+        {
+            if (netMgr.IsHost)
+            {
+                type = "host";
+            }
+            else
+            {
+                type = "server";
+            }
+        }
+        return type;
+    }
 
+
+    public static void Log(string msg)
+    {
+        Debug.Log($"[{GetNetworkMode()} {netMgr.LocalClientId}]:  {msg}");
+    }
+
+
+    public static void Log(NetworkBehaviour what, string msg)
+    {
+        ulong ownerId = what.GetComponent<NetworkObject>().OwnerClientId;
+        Debug.Log($"[{GetNetworkMode()} {netMgr.LocalClientId}][{what.GetType().Name} {ownerId}]:  {msg}");
+    }
 }
