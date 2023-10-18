@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class Player : NetworkBehaviour
 {
-
+    public NetworkVariable<int> ScoreNetVar = new NetworkVariable<int>(0);
     public BulletSpawner bulletSpawner;
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
@@ -22,6 +22,11 @@ public class Player : NetworkBehaviour
 
         //playerBody = transform.Find("PlayerBody").gameObject;
         ApplyColor();
+
+        if (IsClient)
+        {
+            ScoreNetVar.OnValueChanged += ClientOnScoreValueChanged;
+        }
     }
 
     private void Update() {
@@ -30,7 +35,7 @@ public class Player : NetworkBehaviour
             OwnerHandleInput();
             if (Input.GetButtonDown("Fire1")){
                 NetworkHelper.Log("Requesting Fire");
-                FireServerRpc();
+                bulletSpawner.FireServerRpc();
             }
         }
     }
@@ -41,6 +46,43 @@ public class Player : NetworkBehaviour
         NetworkHelper.Log(this, "OnNetworkSpawn");
         Start();
         base.OnNetworkSpawn();
+    }
+
+    private void ClientOnScoreValueChanged(int old, int current) {
+        if (IsOwner) {
+            NetworkHelper.Log(this, $"My score is {ScoreNetVar.Value}");
+        }
+
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (IsServer)  {
+            ServerHandleCollision(collision);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (IsServer) {
+            if (other.CompareTag("power_up"))
+            {
+                other.GetComponent<BasePowerUp>().ServerPickUp(this);
+            }
+        }
+    }
+
+    private void ServerHandleCollision(Collision collision){
+
+        if(collision.gameObject.CompareTag("bullet")) {
+            ulong ownerId = collision.gameObject.GetComponent<NetworkObject>().OwnerClientId;
+            NetworkHelper.Log(this,
+                      $"Hit by {collision.gameObject.name} " +
+                      $"owned by {ownerId}");
+            Player other = NetworkManager.Singleton.ConnectedClients[ownerId].PlayerObject.GetComponent<Player>();
+            other.ScoreNetVar.Value += 1;
+            Destroy(collision.gameObject);
+        }
+      
     }
 
 
@@ -86,12 +128,7 @@ public class Player : NetworkBehaviour
     }
 
 
-    [ServerRpc]
-    private void FireServerRpc()
-    {
-        NetworkHelper.Log("Fire");
-        bulletSpawner.Fire();
-    }
+ 
 
 
 
