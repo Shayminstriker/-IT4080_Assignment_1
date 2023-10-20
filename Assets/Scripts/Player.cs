@@ -26,6 +26,9 @@ public class Player : NetworkBehaviour
         if (IsClient)
         {
             ScoreNetVar.OnValueChanged += ClientOnScoreValueChanged;
+            playerColorNetVar.OnValueChanged += OnPlayerColorChanged;
+
+           
         }
     }
 
@@ -47,6 +50,18 @@ public class Player : NetworkBehaviour
         Start();
         base.OnNetworkSpawn();
     }
+
+
+  
+
+
+    //Delete if needed
+
+    private void OnPlayerColorChanged(Color previous, Color current)
+    {
+        ApplyColor();
+    }
+
 
     private void ClientOnScoreValueChanged(int old, int current) {
         if (IsOwner) {
@@ -95,6 +110,10 @@ public class Player : NetworkBehaviour
             MoveServerRpc(movement, rotation, NetworkManager.LocalClientId);
         }
     }
+
+
+
+
 
     private void ApplyColor() {
         playerBody.GetComponent<MeshRenderer>().material.color = playerColorNetVar.Value;

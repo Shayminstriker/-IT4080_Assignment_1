@@ -10,6 +10,8 @@ public class Arena1Game : NetworkBehaviour
     public Player hostPrefab;
     public Camera arenaCamera;
 
+    private NetworkedPlayers networkedPlayers;
+
     private int positionIndex = 0;
     private Vector3[] startPositions = new Vector3[]
     {
@@ -20,13 +22,7 @@ public class Arena1Game : NetworkBehaviour
 
     };
 
-    private int colorIndex = 0;
-    private Color[] playerColors = new Color[] {
-        Color.blue,
-        Color.green,
-        Color.yellow,
-        Color.magenta,
-    };
+
 
 
 
@@ -36,10 +32,14 @@ public class Arena1Game : NetworkBehaviour
 
         arenaCamera.enabled = !IsClient;
         arenaCamera.GetComponent<AudioListener>().enabled = !IsClient;
+
+        networkedPlayers = GameObject.Find("NetworkedPlayers").GetComponent<NetworkedPlayers>();
+
         if (IsServer)
         {
             SpawnPlayers();
         }
+        
     }
 
     private Vector3 NextPosition()
@@ -54,22 +54,13 @@ public class Arena1Game : NetworkBehaviour
     }
 
 
-    private Color NextColor()
-    {
-        Color newColor = playerColors[colorIndex];
-        colorIndex += 1;
-        if (colorIndex > playerColors.Length - 1)
-        {
-            colorIndex = 0;
-        }
-        return newColor;
-    }
+ 
 
 
     private void SpawnPlayers()
     {
 
-        foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
+        foreach (NetworkPlayerInfo info in networkedPlayers.allNetPlayers)
         {
            // if (clientId == NetworkManager.LocalClientId)
             //{
@@ -81,8 +72,8 @@ public class Arena1Game : NetworkBehaviour
           //  else
             {
                 Player playerSpawn = Instantiate(playerPrefab, NextPosition(), Quaternion.identity);
-                playerSpawn.playerColorNetVar.Value = NextColor();
-                playerSpawn.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+                playerSpawn.playerColorNetVar.Value = info.color;
+                playerSpawn.GetComponent<NetworkObject>().SpawnAsPlayerObject(info.clientId);
 
             }
         }
