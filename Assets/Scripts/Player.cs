@@ -28,6 +28,7 @@ public class Player : NetworkBehaviour
             ScoreNetVar.OnValueChanged += ClientOnScoreValueChanged;
             playerColorNetVar.OnValueChanged += OnPlayerColorChanged;
 
+
            
         }
     }
@@ -96,6 +97,8 @@ public class Player : NetworkBehaviour
             Player other = NetworkManager.Singleton.ConnectedClients[ownerId].PlayerObject.GetComponent<Player>();
             other.ScoreNetVar.Value += 1;
             Destroy(collision.gameObject);
+            //Everytime a player is hit they go back to this position
+            transform.position = new Vector3(4, 2, -1);
         }
       
     }
