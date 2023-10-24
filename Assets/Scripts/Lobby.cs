@@ -9,14 +9,24 @@ public class Lobby : NetworkBehaviour
     public NetworkedPlayers networkedPlayers;
 
 
+
+
+
+
+
+
+
     void Start()
     {
-        if (IsServer) {
+        if (IsServer)
+        {
             networkedPlayers.allNetPlayers.OnListChanged += ServerOnNetworkPlayersChanged;
             ServerPopulateCards();
             lobbyUi.ShowStart(true);
             lobbyUi.OnStartClicked += ServerStartClicked;
-        } else {
+        }
+        else
+        {
             ClientPopulateCards();
             networkedPlayers.allNetPlayers.OnListChanged += ClientNetPlayerChanged;
             lobbyUi.ShowStart(false);
@@ -28,7 +38,7 @@ public class Lobby : NetworkBehaviour
 
     }
 
-  
+
     private void OnChangeNameClicked(string newValue)
     {
         UpdatePlayerNameServerRpc(newValue);
@@ -36,7 +46,7 @@ public class Lobby : NetworkBehaviour
 
 
 
-   private void PopulateMyInfo()
+    private void PopulateMyInfo()
     {
         NetworkPlayerInfo myInfo = networkedPlayers.GetMyPlayerInfo();
         if (myInfo.clientId != ulong.MaxValue)
@@ -48,25 +58,26 @@ public class Lobby : NetworkBehaviour
     private void ServerPopulateCards()
     {
         lobbyUi.playerCards.Clear();
-        foreach(NetworkPlayerInfo info in networkedPlayers.allNetPlayers)
+        foreach (NetworkPlayerInfo info in networkedPlayers.allNetPlayers)
         {
             PlayerCard pc = lobbyUi.playerCards.AddCard("Some player");
             pc.ready = info.ready;
             pc.color = info.color;
             pc.clientId = info.clientId;
             pc.playerName = info.playerName.ToString();
-            if(info.clientId == NetworkManager.LocalClientId)
+            if (info.clientId == NetworkManager.LocalClientId)
             {
                 pc.ShowKick(false);
-            } else
+            }
+            else
             {
                 pc.ShowKick(true);
             }
             pc.OnKickClicked += ServerOnKickClicked;
             pc.UpdateDisplay();
         }
-       
-        
+
+
     }
 
 
@@ -83,7 +94,7 @@ public class Lobby : NetworkBehaviour
             pc.ShowKick(false);
             pc.UpdateDisplay();
         }
-        
+
     }
 
     private void ServerStartClicked()
@@ -91,7 +102,8 @@ public class Lobby : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("Arena1Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
-    private void ClientOnReadyToggled(bool newValue) {
+    private void ClientOnReadyToggled(bool newValue)
+    {
         UpdateReadyServerRpc(newValue);
     }
 
@@ -116,19 +128,40 @@ public class Lobby : NetworkBehaviour
     }
 
 
-    private void ClientOnClientDisconnect(ulong clientId) { 
+    private void ClientOnClientDisconnect(ulong clientId)
+    {
         lobbyUi.gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    private void PopulateClientInfoClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        PopulateMyInfo();
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    private void UpdateReadyServerRpc(bool newValue, ServerRpcParams rpcParams = default) {
+    private void UpdateReadyServerRpc(bool newValue, ServerRpcParams rpcParams = default)
+    {
         networkedPlayers.UpdateReady(rpcParams.Receive.SenderClientId, newValue);
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    private void UpdatePlayerNameServerRpc(string newValue, ServerRpcParams rpcParams = default) {
-networkedPlayers.UpdatePlayerName(rpcParams.Receive.SenderClientId, newValue);
+    private void UpdatePlayerNameServerRpc(string newValue, ServerRpcParams rpcParams = default)
+    {
+        string newName = networkedPlayers.UpdatePlayerName(rpcParams.Receive.SenderClientId, newValue);
+        if (newName != newValue)
+        {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { rpcParams.Receive.SenderClientId }
+                }
+            };
+            PopulateClientInfoClientRpc(clientRpcParams);
+        }
     }
+
 }

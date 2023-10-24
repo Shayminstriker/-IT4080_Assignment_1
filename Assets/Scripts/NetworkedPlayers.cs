@@ -121,18 +121,18 @@ public class NetworkedPlayers : NetworkBehaviour
         allNetPlayers[idx] = info;
     }
 
-    public void UpdatePlayerName(ulong clientId, string playerName)
+    public string UpdatePlayerName(ulong clientId, string playerName)
     {
         int idx = FindPlayerIndex(clientId);
-        if (idx == -1)
-        {
-            return;
-        }
+        if (idx == -1) return "";
 
         NetworkPlayerInfo info = allNetPlayers[idx];
-        info.playerName = playerName;
-        allNetPlayers[idx] = info;
-
+        if (playerName.Length < 4)
+        {
+            info.playerName = playerName;
+            allNetPlayers[idx] = info;
+        }
+        return info.playerName.ToString();
     }
 
     public NetworkPlayerInfo GetMyPlayerInfo()
