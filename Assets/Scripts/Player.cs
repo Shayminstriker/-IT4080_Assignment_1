@@ -69,6 +69,10 @@ public class Player : NetworkBehaviour
             NetworkHelper.Log(this, $"My score is {ScoreNetVar.Value}");
         }
 
+
+
+
+
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -98,7 +102,7 @@ public class Player : NetworkBehaviour
             other.ScoreNetVar.Value += 1;
             Destroy(collision.gameObject);
             //Everytime a player is hit they go back to this position
-            transform.position = new Vector3(4, 2, -1);
+            transform.position = new Vector3(-12, 2, -88);
         }
       
     }
@@ -130,21 +134,21 @@ public class Player : NetworkBehaviour
 
         if(NetworkManager.LocalClientId != clientId)
         {
-            if (playerBody.transform.position.x < -25)
+            if (playerBody.transform.position.x < -68)
             {
-                transform.position = new Vector3(-25, transform.position.y, transform.position.z);
+                transform.position = new Vector3(-68, transform.position.y, transform.position.z);
             }
-            if(playerBody.transform.position.x > 25)
+            if(playerBody.transform.position.x > 68)
             {
-                transform.position = new Vector3(25, transform.position.y, transform.position.z);
+                transform.position = new Vector3(68, transform.position.y, transform.position.z);
             }
-            if (playerBody.transform.position.z < -25)
+            if (playerBody.transform.position.z < -90)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, -25);
+                transform.position = new Vector3(transform.position.x, transform.position.y, -90);
             }
-            if (playerBody.transform.position.z > 25)
+            if (playerBody.transform.position.z > 90)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 25);
+                transform.position = new Vector3(transform.position.x, transform.position.y, 90);
             }
         }
     }

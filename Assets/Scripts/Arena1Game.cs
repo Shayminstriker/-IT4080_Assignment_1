@@ -15,10 +15,10 @@ public class Arena1Game : NetworkBehaviour
     private int positionIndex = 0;
     private Vector3[] startPositions = new Vector3[]
     {
-        new Vector3(4, 2, 0),
-        new Vector3(-4, 2, 0),
-        new Vector3(0, 2, 4),
-        new Vector3(0, 2, -4)
+        new Vector3(-15, 2, -88),
+        new Vector3(-12, 2, -88),
+        new Vector3(-10, 2, -88),
+        new Vector3(-8, 2, -88)
 
     };
 

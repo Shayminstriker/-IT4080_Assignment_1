@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 1231253203147914327, guid: cbd905ab9a6705d4094f3eff216213ad, type: 3}
+  timeBetweenBullets: 0.5
 --- !u!1 &2399936047881771140
 GameObject:
   m_ObjectHideFlags: 0
