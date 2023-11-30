@@ -6,6 +6,7 @@ using Unity.Netcode;
 public class Player : NetworkBehaviour
 {
     public NetworkVariable<int> ScoreNetVar = new NetworkVariable<int>(0);
+    public NetworkVariable<int> WinNetVar = new NetworkVariable<int>(0);
     public BulletSpawner bulletSpawner;
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
@@ -27,9 +28,9 @@ public class Player : NetworkBehaviour
         {
             ScoreNetVar.OnValueChanged += ClientOnScoreValueChanged;
             playerColorNetVar.OnValueChanged += OnPlayerColorChanged;
+            WinNetVar.OnValueChanged += ClientWinValueChanged;
 
 
-           
         }
     }
 
@@ -67,6 +68,19 @@ public class Player : NetworkBehaviour
     private void ClientOnScoreValueChanged(int old, int current) {
         if (IsOwner) {
             NetworkHelper.Log(this, $"My score is {ScoreNetVar.Value}");
+        }
+
+
+
+
+
+    }
+
+    private void ClientWinValueChanged(int old, int current)
+    {
+        if (IsOwner)
+        {
+            NetworkHelper.Log(this, $"I have {WinNetVar.Value} win(s)");
         }
 
 
