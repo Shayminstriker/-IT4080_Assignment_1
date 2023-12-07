@@ -49,7 +49,7 @@ public class LobbyManager : NetworkBehaviour
 
         public void StartGame()
         {
-            NetworkManager.SceneManager.LoadScene("Arena1Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            NetworkManager.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
 
